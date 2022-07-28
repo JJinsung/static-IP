@@ -1,0 +1,23 @@
+@echo off
+
+setlocal
+
+IF MASTER==%COMPUTERNAME% goto exit
+
+for /f "tokens=1,2 delims=; "%%a in (c:\script\ip.dat) do (
+
+if %%a == %COMPUTERNAME% (
+
+echo Hostname : %%a
+echo IP	:%%b
+echo Start IP Change
+
+netsh interface ip set address name="Ethernet0" static %%b 255.255.255.0 10.50.153.1
+ping localhost -n 10
+netsh interface ip add dns "Ethernet0" 10.50.152.151 index=1
+ )
+)
+
+endlocal
+
+schtasks /delete /tn AssignIP /f
